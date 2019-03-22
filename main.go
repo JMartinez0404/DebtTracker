@@ -12,13 +12,6 @@ type debt struct {
 	amount float64
 }
 
-func (d debt) getName() {
-	fmt.Println("Name of Debt: ", d.name)
-}
-func (d debt) getAmountOwed() {
-	fmt.Println("Amount Owed: ", d.amount)
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 func printMenu() {
 	var numDebts int
@@ -39,15 +32,22 @@ func printMenu() {
 		d := debt{debtName, debtAmt}
 		debtSlice = append(debtSlice, d)
 	}
-	fmt.Println()
-	fmt.Println(debtSlice)
+
+	fmt.Println("---------------------------------------------")
+	fmt.Println("---------------Debt Statistics---------------")
+	for x := range debtSlice {
+		fmt.Printf("%s", debtSlice[x].name)
+		fmt.Printf("  $%.2f\n", debtSlice[x].amount)
+	}
+	fmt.Println("--------------Total Amount Owed--------------")
+	fmt.Printf("  $%.2f\n", addDebts(debtSlice))
 }
 
-func addDebts(nums ...float64) float64 {
-	totalDebt := 0.0
+func addDebts(s []debt) float64 {
+	var totalDebt float64
 
-	for _, x := range nums {
-		totalDebt += x
+	for x := range s {
+		totalDebt += s[x].amount
 	}
 
 	return totalDebt
@@ -56,9 +56,6 @@ func addDebts(nums ...float64) float64 {
 ///////////////////////////////////////////////////////////////////////////////
 func main() {
 	printMenu()
-
-	//nums := []float64{1200, 3000.75, 3500}
-	//fmt.Println(addDebts(nums...))
 
 	os.Exit(1)
 }
