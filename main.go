@@ -8,14 +8,18 @@ import (
 
 ///////////////////////////////////////////////////////////////////////////////
 type debt struct {
-	name   string
-	amount float64
+	name         string
+	amount       float64
+	interestRate float64
+	life         int
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 func printMenu() {
 	var numDebts int
 	var debtAmt float64
+	var debtRate float64
+	var debtLife int
 	debtSlice := make([]debt, 0)
 	reader := bufio.NewReader(os.Stdin)
 
@@ -29,15 +33,21 @@ func printMenu() {
 		debtName, _ := reader.ReadString('\n')
 		fmt.Printf("How much do you owe for debt #%d?\n", x)
 		fmt.Scanln(&debtAmt)
-		d := debt{debtName, debtAmt}
+		fmt.Printf("What is the interest rate of #%d?\n", x)
+		fmt.Scanln(&debtRate)
+		fmt.Printf("How old is debt #%d in months?\n", x)
+		fmt.Scanln(&debtLife)
+		d := debt{debtName, debtAmt, debtRate, debtLife}
 		debtSlice = append(debtSlice, d)
 	}
 
 	fmt.Println("---------------------------------------------")
 	fmt.Println("---------------Debt Statistics---------------")
 	for x := range debtSlice {
-		fmt.Printf("%s", debtSlice[x].name)
-		fmt.Printf("  $%.2f\n", debtSlice[x].amount)
+		fmt.Printf("NAME: %s", debtSlice[x].name)
+		fmt.Printf("  AMT: $%.2f\n", debtSlice[x].amount)
+		fmt.Printf("  RATE: %.2f\n", debtSlice[x].interestRate)
+		fmt.Printf("  LENGTH: %d\n", debtSlice[x].life)
 	}
 	fmt.Println("--------------Total Amount Owed--------------")
 	fmt.Printf("  $%.2f\n", addDebts(debtSlice))
@@ -47,7 +57,7 @@ func addDebts(s []debt) float64 {
 	var totalDebt float64
 
 	for x := range s {
-		totalDebt += s[x].amount
+		totalDebt += s[x].amount + ((s[x].amount * (s[x].interestRate / 100)) * float64(s[x].life))
 	}
 
 	return totalDebt
